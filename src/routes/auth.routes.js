@@ -1,12 +1,17 @@
-const express = require("express");
+console.log('>> auth.routes.js loaded');
+
+
+const express = require('express');
 const router = express.Router();
 
-const authController = require("../controllers/auth.controller");
-const { authMiddleware } = require("../middleware/auth.middleware");
+const authController = require('../controllers/auth.controller');
+const validate = require('../middleware/validate.middleware');
+const { registerSchema, loginSchema } = require('../validators/auth.validator');
+const { authMiddleware } = require('../middleware/auth.middleware');
 
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.post("/refresh", authController.refresh);
-router.get("/me", authMiddleware, authController.me);
+router.post('/register', validate(registerSchema), authController.register);
+router.post('/login', validate(loginSchema), authController.login);
+router.post('/refresh', authController.refresh);
+router.get('/me', authMiddleware, authController.me);
 
 module.exports = router;
