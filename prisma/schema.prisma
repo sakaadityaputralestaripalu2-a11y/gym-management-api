@@ -12,7 +12,7 @@ model User {
   email     String    @unique
   password  String
   name      String
-  role      String    @default("USER") // USER atau ADMIN, nanti dicek di level aplikasi
+  role      String    @default("USER") // USER | ADMIN
   members   Member[]
 
   createdAt DateTime  @default(now())
@@ -21,30 +21,11 @@ model User {
   @@index([email])
 }
 
-model Member {
-  id               Int              @id @default(autoincrement())
-  userId           Int?             // optional → boleh null
-  user             User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  fullName         String
-  phoneNumber      String?
-  membershipPlanId Int
-  membershipPlan   MembershipPlan   @relation(fields: [membershipPlanId], references: [id], onDelete: Cascade)
-
-  classBookings    ClassBooking[]
-
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-
-  @@index([fullName])
-  @@index([membershipPlanId])
-}
-
 model MembershipPlan {
   id             Int       @id @default(autoincrement())
   name           String
-  price          Int       // rupiah
-  durationInDays Int       // misal 30, 90, 365
+  price          Int
+  durationInDays Int
   description    String?
 
   members        Member[]
@@ -55,28 +36,47 @@ model MembershipPlan {
   @@index([name])
 }
 
+model Member {
+  id               Int              @id @default(autoincrement())
+  userId           Int?             // optional owner, can be null
+  user             User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  fullName         String
+  email            String?          @unique
+  phoneNumber      String?
+  membershipPlanId Int
+  membershipPlan   MembershipPlan   @relation(fields: [membershipPlanId], references: [id], onDelete: Cascade)
+
+  bookings         ClassBooking[]
+
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([fullName])
+  @@index([membershipPlanId])
+}
+
 model GymClass {
-  id             Int             @id @default(autoincrement())
-  name           String
-  description    String?
-  scheduleTime   DateTime
+  id              Int            @id @default(autoincrement())
+  name            String
+  description     String?
+  scheduleTime    DateTime
   maxParticipants Int
 
-  bookings       ClassBooking[]
+  bookings        ClassBooking[]
 
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@index([name])
   @@index([scheduleTime])
 }
 
-// Junction table many-to-many Member <-> GymClass
 model ClassBooking {
   id         Int      @id @default(autoincrement())
   memberId   Int
   gymClassId Int
-  status     String   @default("CONFIRMED") // CONFIRMED, CANCELLED, COMPLETED
+  status     String   @default("CONFIRMED") // CONFIRMED | CANCELLED | COMPLETED
 
   member     Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
   gymClass   GymClass @relation(fields: [gymClassId], references: [id], onDelete: Cascade)
