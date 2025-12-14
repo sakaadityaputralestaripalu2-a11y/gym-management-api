@@ -1,9 +1,7 @@
 # Gym Management API — Documentation
 
-## Base URL
-http://localhost:3000/api
-
-Production URL akan diisi setelah deployment AWS EC2.
+#Base URL
+http://54.227.83.243:3000/api
 
 ---
 
