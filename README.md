@@ -10,7 +10,7 @@ Aplikasi ini di-deploy ke cloud menggunakan AWS EC2.
 API telah berhasil di-deploy dan dapat diakses melalui public internet.
 
 ### Base URL
-http://54.227.83.243:3000
+http://100.25.216.237:3000
 
 ---
 
